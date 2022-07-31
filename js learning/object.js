@@ -86,3 +86,95 @@ console.log("name" in person);
 person.toy = undefined;
 console.log(person.toy);
 console.log("toy" in person);
+
+// -------------------------------------------------------------------------------------------------------------------
+
+// ДЛЯ ЗВЕРНЕННЯ ДО ПОТОЧНОГО ОБ'ЄКТУ ВСЕРЕДЕНІ ЯКОГО ВИЗНАЧАЄТЬСЯ МЕТОД Є КЛЮЧОВЕ СЛОВО THIS:
+
+let person2 = {
+  name: "John",
+  age: 42,
+  greet: function () {
+    return "Hi, my name is " + this.name;
+  },
+};
+
+console.log(person2.greet());
+
+// при винесенні функції за межі об'екту, а всередині об'єкту залишити на неї посилання, THIS всередині функції
+//  все одно буде відноситись до об'екту з посиланням на цю функцію:
+
+let greet = function () {
+  return "Hi, my name is " + this.name;
+};
+
+let person3 = {
+  name: "John",
+  age: 42,
+  greet: greet,
+};
+
+console.log(person3.greet());
+
+// така поведінка надає можливість перевикористовувати функцію в різних об'єктах:
+
+let person4 = {
+  name: "Michael",
+  greet: greet,
+};
+
+let anoutherPerson = {
+  name: "Bob",
+  greet: greet,
+};
+
+console.log(person3.greet());
+console.log(person4.greet());
+console.log(anoutherPerson.greet());
+
+// при застосуванні THIS без вказування методу, THIS буде посилатися на глобальний об'ект (Window):
+
+let greet2 = function () {
+  return "Hi, my name is " + this;
+};
+
+console.log(greet2());
+console.log(this);
+
+// --------------------------------------------------------------------------------
+
+// для вказування THIS на конкретний обьект застосовується метод CALL:
+
+console.log(anoutherPerson.greet.call(person));
+
+// якщо функція приймає аргументи, то їх можна вказувати в момент виклику цієї функції;
+
+let anoutherGreet = function (greeting) {
+  return greeting + "My name is " + this.name;
+};
+
+let anoutherPerson2 = {
+  name: "Boris",
+  greet: anoutherGreet,
+};
+
+console.log(anoutherPerson2.greet("Hi! "));
+
+console.log(anoutherPerson2.greet.call(person, "Bonjour! "));
+
+// -----------------------------------------------------------------------------------------
+
+// метод APPLY також застосовується для вказування на конкретний об'ект, тільки аргументи передаються як массив,
+// з застосуванням квадратних скобок:
+
+console.log(anoutherPerson2.greet.apply(person, ["Bonjour! "]));
+
+// --------------------------------------------------------------------------
+
+// метод BIND схожий на CALL або APPLY, тільки він не викликає функцію, а пов'язує її з конкретним об'єктом:
+
+let bound = anoutherGreet.bind(person);
+console.log(bound("Hello there! "));
+
+// при цьому ключове слово THIS вказує на той об'ект, з яким воно пов'язане,
+// і метод BIND тут не замінює функцію, а повертає нову функцію
