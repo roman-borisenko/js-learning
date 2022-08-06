@@ -242,4 +242,6 @@ WebDeveloper.develop = function () {
   console.log("Working...");
 };
 
+// і викликати в консоль
+
 developep.develop();
