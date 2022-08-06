@@ -178,3 +178,68 @@ console.log(bound("Hello there! "));
 
 // при цьому ключове слово THIS вказує на той об'ект, з яким воно пов'язане,
 // і метод BIND тут не замінює функцію, а повертає нову функцію
+
+// --------------------------------------------------------------------------------------------------------
+
+// НАСЛІДУВАННЯ ЧЕРЕЗ ПРОТОТИП.
+// СТВОРЮЄМО ПРОТОТИП за допомогою КОНСТРУКТОРА:
+
+const Person = {
+  constructor: function (name, age, gender) {
+    this.name = name;
+    this.age = age;
+    this.gender = gender;
+    return this;
+  },
+  // далі можна зазначити спільну складову дя всіх об'єктів, які будуть наслідувати даний прототип
+
+  greet: function () {
+    console.log("Hi, my name is " + this.name);
+  },
+};
+
+//  Тепер можна створювати об'єкти за допомогою Object.create
+// і, оскільки цей метод повертає новий об'єкт, можна викликати
+// його метод constructor, в який можна передати нові параметри
+
+let firstPerson, secondPerson, thirdPerson;
+
+firstPerson = Object.create(Person).constructor("Роман", 46, "чол");
+secondPerson = Object.create(Person).constructor("Андрій", 23, "чол");
+thirdPerson = Object.create(Person).constructor("Тетяна", 48, "жін");
+
+console.log(secondPerson);
+secondPerson.greet();
+
+//  Крім того в Об'ектно Орієнтовуваному Програмуванні передбачається наслідування класів.
+// Наприклад, при створенні класів можна користуватися батьківським протототипом, а також
+// доповнювати його своїм конструкторомб який буде створювати властивості, притаманні лише цьому класу
+
+const WebDeveloper = Object.create(Person);
+WebDeveloper.constructor = function (name, age, gender, skills) {
+  // тут можна скопіювати constructor з батьківського класу, щоб не сворювати дублюючі властивості.
+  // Робимо це за допомогою методу apply
+  Person.constructor.apply(this, arguments);
+  // потім створюємо недостаючу властивість
+  this.skills = skills || [];
+  return this;
+};
+
+// тепер можна створити новий об'єкт і перевірити його нові властивості в консолі
+
+const developep = Object.create(WebDeveloper).constructor(
+  "Борисенко",
+  46,
+  "чол",
+  ["html", "css", "javasript", "React"]
+);
+
+console.log(developep.skills);
+
+// також можна додавати на прототип нові методи
+
+WebDeveloper.develop = function () {
+  console.log("Working...");
+};
+
+developep.develop();
